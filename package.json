@@ -1,0 +1,13 @@
+{
+  "name": "catalog-api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node --experimental-strip-types --experimental-transform-types --env-file=.env.dev src/main.ts",
+    "start:dev": "node --experimental-strip-types --experimental-transform-types --env-file=.env.dev --watch src/main.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
