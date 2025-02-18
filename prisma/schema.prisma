@@ -1,0 +1,23 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters", "multiSchema"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Title {
+  tconst         String  @id @default(uuid())
+  titletype      String
+  primarytitle   String
+  originaltitle  String
+  isadult        Boolean
+  startyear      Int
+  endyear        Int?
+  genres         String?
+  runtimeminutes Int?
+
+  @@map("title_basics")
+}
