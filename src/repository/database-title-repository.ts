@@ -1,5 +1,5 @@
-import { DefaultArgs } from '@prisma/client/runtime/library';
-import { TitleRepository, TitleRepositoryListInput, TitleRepositoryListOutput } from './title-repository';
+import type { DefaultArgs } from '@prisma/client/runtime/library';
+import type { TitleRepository, TitleRepositoryListInput, TitleRepositoryListOutput } from './title-repository';
 import { Prisma, PrismaClient } from '@prisma/client';
 
 export class DatabaseTitleRepository implements TitleRepository {
@@ -18,9 +18,9 @@ export class DatabaseTitleRepository implements TitleRepository {
       primaryTitle: row.primarytitle,
       originalTitle: row.originaltitle,
       startYear: row.startyear,
-      endYear: row.endyear!,
+      endYear: row.endyear,
       genres: row.genres?.split(',') ?? [],
-      runtimeMinutes: row.runtimeminutes!,
+      runtimeMinutes: row.runtimeminutes,
     }));
     return {
       data: titles,
