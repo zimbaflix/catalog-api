@@ -1,11 +1,16 @@
 import { Title } from '../entity/title';
 
+export enum SortDirection {
+  ASC = 'asc',
+  DESC = 'desc',
+}
+
 export type TitleRepositoryListInput = {
   cursor?: string;
   limit?: number;
-  order?: {
+  sort?: {
     field: string;
-    direction: 'asc' | 'desc';
+    direction: SortDirection;
   };
   filter?: {
     type?: string;

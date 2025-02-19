@@ -82,12 +82,12 @@ describe('ListTitlesUseCase', () => {
     const sut = makeSut();
     const sutInput: ListTitlesUseCaseInput = {
       cursor: 'cursor',
-      order: { field: 'field', direction: 'asc' },
-      filter: { type: 'movie' },
+      sort: { field: 'field', direction: 'asc' },
+      type: 'movie',
     };
     await sut.execute(sutInput);
-    expect(loggerDebugSpy).toHaveBeenCalledWith('Listing titles', sutInput);
-    expect(loggerInfoSpy).toHaveBeenCalledWith('Listed titles', { count: 0, cursor: undefined });
+    expect(loggerDebugSpy).toHaveBeenCalledWith('listing titles', sutInput);
+    expect(loggerInfoSpy).toHaveBeenCalledWith('listed titles', { count: 0, cursor: undefined });
   });
 
   it('calls repository with correct params', async () => {
@@ -97,8 +97,8 @@ describe('ListTitlesUseCase', () => {
     expect(titleRepositoryListSpy).toHaveBeenCalledWith({});
     await sut.execute({
       cursor: 'cursor',
-      order: { field: 'field', direction: 'asc' },
-      filter: { type: 'movie' },
+      sort: { field: 'field', direction: 'asc' },
+      type: 'movie',
     });
     expect(titleRepositoryListSpy).toHaveBeenCalledWith({
       cursor: 'cursor',

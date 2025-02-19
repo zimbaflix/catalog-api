@@ -2,6 +2,7 @@ import { DatabaseTitleRepository } from './database-title-repository';
 import { describe, expect, it, vi } from 'vitest';
 import { prisma } from '../common/prisma';
 import { Title } from '@prisma/client';
+import { SortDirection } from './title-repository';
 
 vi.mock('@prisma/client', () => ({
   PrismaClient: class PrismaClient {
@@ -55,7 +56,7 @@ describe('DatabaseTitleRepository', () => {
 
     it('calls prisma.title.findMany with order', async () => {
       const sut = makeSut();
-      await sut.list({ order: { field: 'tconst', direction: 'asc' }, limit: 10 });
+      await sut.list({ sort: { field: 'tconst', direction: SortDirection.ASC }, limit: 10 });
       expect(prisma.title.findMany).toHaveBeenCalledWith({
         take: 10,
         orderBy: {
@@ -70,7 +71,7 @@ describe('DatabaseTitleRepository', () => {
       expect(prisma.title.findMany).toHaveBeenCalledWith({
         take: 10,
         where: {
-          titletype: 'movie',
+          type: 'movie',
         },
       });
     });
@@ -78,15 +79,15 @@ describe('DatabaseTitleRepository', () => {
     it('returns data from prisma.title.findMany', async () => {
       const sut = makeSut();
       const title: Title = {
-        tconst: '1',
-        titletype: 'movie',
-        primarytitle: 'Movie',
-        originaltitle: 'Movie',
-        startyear: 2021,
-        endyear: 2021,
+        id: '1',
+        type: 'movie',
+        primaryTitle: 'Movie',
+        originalTitle: 'Movie',
+        startYear: 2021,
+        endYear: 2021,
         genres: 'Action',
-        runtimeminutes: 120,
-        isadult: false,
+        runtimeMinutes: 120,
+        isAdult: false,
       };
       vi.spyOn(prisma.title, 'findMany').mockResolvedValueOnce([title]);
       const result = await sut.list({ limit: 10 });
@@ -119,15 +120,15 @@ describe('DatabaseTitleRepository', () => {
     it('returns a empty genres array when genres is null', async () => {
       const sut = makeSut();
       const title: Title = {
-        tconst: '1',
-        titletype: 'movie',
-        primarytitle: 'Movie',
-        originaltitle: 'Movie',
-        startyear: 2021,
-        endyear: 2021,
+        id: '1',
+        type: 'movie',
+        primaryTitle: 'Movie',
+        originalTitle: 'Movie',
+        startYear: 2021,
+        endYear: 2021,
         genres: null,
-        runtimeminutes: 120,
-        isadult: false,
+        runtimeMinutes: 120,
+        isAdult: false,
       };
       vi.spyOn(prisma.title, 'findMany').mockResolvedValueOnce([title]);
       const result = await sut.list({ limit: 10 });
