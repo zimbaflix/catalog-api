@@ -46,13 +46,6 @@ function makeSut() {
 }
 
 describe('ListTitlesUseCase', () => {
-  it('calls repository with correct params', async () => {
-    const titleRepositoryListSpy = vi.spyOn(TitleRepositoryStub.prototype, 'list');
-    const sut = makeSut();
-    await sut.execute();
-    expect(titleRepositoryListSpy).toHaveBeenCalledWith({});
-  });
-
   it('returns correct output', async () => {
     const title: Title = {
       id: 'tt123',
@@ -93,8 +86,12 @@ describe('ListTitlesUseCase', () => {
   it('calls repository with correct params', async () => {
     const titleRepositoryListSpy = vi.spyOn(TitleRepositoryStub.prototype, 'list');
     const sut = makeSut();
-    await sut.execute();
-    expect(titleRepositoryListSpy).toHaveBeenCalledWith({});
+    await sut.execute({});
+    expect(titleRepositoryListSpy).toHaveBeenCalledWith({
+      cursor: undefined,
+      filter: {},
+      sort: {},
+    });
     await sut.execute({
       cursor: 'cursor',
       sort: { field: 'field', direction: 'asc' },
@@ -102,7 +99,7 @@ describe('ListTitlesUseCase', () => {
     });
     expect(titleRepositoryListSpy).toHaveBeenCalledWith({
       cursor: 'cursor',
-      order: { field: 'field', direction: 'asc' },
+      sort: { field: 'asc' },
       filter: { type: 'movie' },
     });
   });

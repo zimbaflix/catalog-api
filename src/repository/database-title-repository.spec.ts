@@ -2,7 +2,7 @@ import { DatabaseTitleRepository } from './database-title-repository';
 import { describe, expect, it, vi } from 'vitest';
 import { prisma } from '../common/prisma';
 import { Title } from '@prisma/client';
-import { SortDirection } from './title-repository';
+import { TitleSortDirection } from './title-repository';
 
 vi.mock('@prisma/client', () => ({
   PrismaClient: class PrismaClient {
@@ -23,6 +23,10 @@ describe('DatabaseTitleRepository', () => {
       await sut.list({});
       expect(prisma.title.findMany).toHaveBeenCalledWith({
         take: 10,
+        cursor: undefined,
+        skip: 0,
+        where: { isAdult: false },
+        orderBy: [],
       });
     });
 
@@ -31,6 +35,10 @@ describe('DatabaseTitleRepository', () => {
       await sut.list({ limit: 5 });
       expect(prisma.title.findMany).toHaveBeenCalledWith({
         take: 5,
+        cursor: undefined,
+        skip: 0,
+        where: { isAdult: false },
+        orderBy: [],
       });
     });
 
@@ -39,6 +47,10 @@ describe('DatabaseTitleRepository', () => {
       await sut.list({ limit: 100 });
       expect(prisma.title.findMany).toHaveBeenCalledWith({
         take: 10,
+        cursor: undefined,
+        skip: 0,
+        where: { isAdult: false },
+        orderBy: [],
       });
     });
 
@@ -48,20 +60,20 @@ describe('DatabaseTitleRepository', () => {
       expect(prisma.title.findMany).toHaveBeenCalledWith({
         take: 10,
         skip: 1,
-        cursor: {
-          tconst: '1',
-        },
+        orderBy: [],
+        cursor: { id: '1' },
+        where: { isAdult: false },
       });
     });
 
     it('calls prisma.title.findMany with order', async () => {
       const sut = makeSut();
-      await sut.list({ sort: { field: 'tconst', direction: SortDirection.ASC }, limit: 10 });
+      await sut.list({ sort: { tconst: TitleSortDirection.ASC }, limit: 10 });
       expect(prisma.title.findMany).toHaveBeenCalledWith({
         take: 10,
-        orderBy: {
-          tconst: 'asc',
-        },
+        skip: 0,
+        orderBy: [{ tconst: 'asc' }],
+        where: { isAdult: false },
       });
     });
 
@@ -69,8 +81,12 @@ describe('DatabaseTitleRepository', () => {
       const sut = makeSut();
       await sut.list({ filter: { type: 'movie' }, limit: 10 });
       expect(prisma.title.findMany).toHaveBeenCalledWith({
+        cursor: undefined,
+        skip: 0,
         take: 10,
+        orderBy: [],
         where: {
+          isAdult: false,
           type: 'movie',
         },
       });

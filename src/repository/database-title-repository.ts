@@ -1,5 +1,8 @@
-import type { DefaultArgs } from '@prisma/client/runtime/library';
-import type { TitleRepository, TitleRepositoryListInput, TitleRepositoryListOutput } from './title-repository';
+import {
+  type TitleRepository,
+  type TitleRepositoryListInput,
+  type TitleRepositoryListOutput,
+} from './title-repository';
 import { Prisma, PrismaClient } from '@prisma/client';
 import { Title } from '../entity/title';
 
@@ -11,7 +14,10 @@ export class DatabaseTitleRepository implements TitleRepository {
   async list(input: TitleRepositoryListInput): Promise<TitleRepositoryListOutput> {
     const rows = await this.db.title.findMany({
       take: input.limit ? Math.min(input.limit, this.maxLimit) : this.maxLimit,
-      ...this.buildListQuery(input),
+      cursor: input.cursor ? { id: input.cursor } : undefined,
+      skip: input.cursor ? 1 : 0,
+      where: this.buildWhereClause(input),
+      orderBy: this.buildOrderByClause(input),
     });
     const titles: Title[] = rows.map((row) => ({
       id: row.id,
@@ -29,17 +35,18 @@ export class DatabaseTitleRepository implements TitleRepository {
     };
   }
 
-  private buildListQuery(input: TitleRepositoryListInput): Prisma.TitleFindManyArgs<DefaultArgs> {
-    const query: Prisma.TitleFindManyArgs<DefaultArgs> = {};
-    if (input.cursor) {
-      Object.assign(query, { skip: 1, cursor: { tconst: input.cursor } });
+  private buildWhereClause(input: TitleRepositoryListInput): Prisma.TitleWhereInput {
+    const conditions: Prisma.TitleWhereInput = { isAdult: false };
+    if (input.filter) {
+      Object.entries(input.filter).forEach(([field, value]) => Object.assign(conditions, { [field]: value }));
     }
-    if (input.sort?.field) {
-      Object.assign(query, { orderBy: { [input.sort.field]: input.sort.direction } });
+    return conditions;
+  }
+
+  private buildOrderByClause(input: TitleRepositoryListInput): Prisma.TitleOrderByWithAggregationInput[] {
+    if (input.sort) {
+      return Object.entries(input.sort).map(([field, direction]) => ({ [field]: direction }));
     }
-    if (input.filter?.type) {
-      Object.assign(query, { where: { type: input.filter.type } });
-    }
-    return query;
+    return [];
   }
 }

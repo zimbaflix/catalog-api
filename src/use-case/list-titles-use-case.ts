@@ -1,10 +1,11 @@
-import type { Logger } from '../common/logger/logger.ts';
-import type { Title } from '../entity/title.ts';
-import { TitleRepository, TitleRepositoryListInput } from '../repository/title-repository.js';
+import type { Logger } from '../common/logger/logger';
+import type { Title } from '../entity/title';
+import { TitleFilter, TitleSort, TitleRepository } from '../repository/title-repository';
 
 export type ListTitlesUseCaseInput = {
   cursor?: string;
   type?: string;
+  startYear?: { lte?: number; eq?: number };
   sort?: { field: string; direction: string };
 };
 
@@ -20,7 +21,11 @@ export class ListTitlesUseCase {
 
   async execute(input?: ListTitlesUseCaseInput): Promise<ListTitlesUseCaseOutput> {
     this.logger.debug('listing titles', input);
-    const { data, cursor } = await this.titleRepository.list(this.buildListInput(input));
+    const { data, cursor } = await this.titleRepository.list({
+      sort: this.buildTitleGatewaySort(input),
+      filter: this.buildTitleGatewayFilter(input),
+      cursor: input?.cursor,
+    });
     this.logger.info('listed titles', { count: data.length, cursor });
     return {
       titles: data,
@@ -28,22 +33,19 @@ export class ListTitlesUseCase {
     };
   }
 
-  private buildListInput(input: ListTitlesUseCaseInput): TitleRepositoryListInput {
-    const listInput: TitleRepositoryListInput = {};
-    if (input?.cursor) {
-      Object.assign(listInput, { cursor: input.cursor });
-    }
+  private buildTitleGatewaySort(input: ListTitlesUseCaseInput): TitleSort {
+    const sort: TitleSort = {};
     if (input?.sort) {
-      Object.assign(listInput, {
-        order: {
-          field: input.sort.field,
-          direction: input.sort.direction,
-        },
-      });
+      Object.assign(sort, { [input.sort.field]: input.sort.direction });
     }
+    return sort;
+  }
+
+  private buildTitleGatewayFilter(input: ListTitlesUseCaseInput): TitleFilter {
+    const filter: TitleFilter = {};
     if (input?.type) {
-      Object.assign(listInput, { filter: { type: input.type } });
+      Object.assign(filter, { type: input.type });
     }
-    return listInput;
+    return filter;
   }
 }
