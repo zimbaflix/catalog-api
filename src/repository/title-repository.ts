@@ -13,6 +13,9 @@ export type TitleFilter = {
     lte?: number;
     eq?: number;
   };
+  averageRate?: {
+    not?: number | null;
+  };
 };
 
 export type TitleRepositoryListInput = {

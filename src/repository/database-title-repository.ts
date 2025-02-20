@@ -28,6 +28,7 @@ export class DatabaseTitleRepository implements TitleRepository {
       endYear: row.endYear,
       genres: row.genres?.split(',') ?? [],
       runtimeMinutes: row.runtimeMinutes,
+      averageRate: row.averageRate,
     }));
     return {
       data: titles,
@@ -38,14 +39,18 @@ export class DatabaseTitleRepository implements TitleRepository {
   private buildWhereClause(input: TitleRepositoryListInput): Prisma.TitleWhereInput {
     const conditions: Prisma.TitleWhereInput = { isAdult: false };
     if (input.filter) {
-      Object.entries(input.filter).forEach(([field, value]) => Object.assign(conditions, { [field]: value }));
+      Object.entries(input.filter).forEach(([field, value]) => {
+        Object.assign(conditions, { [field]: value });
+      });
     }
     return conditions;
   }
 
-  private buildOrderByClause(input: TitleRepositoryListInput): Prisma.TitleOrderByWithAggregationInput[] {
+  private buildOrderByClause(input: TitleRepositoryListInput): Prisma.TitleOrderByWithRelationInput[] {
     if (input.sort) {
-      return Object.entries(input.sort).map(([field, direction]) => ({ [field]: direction }));
+      return Object.entries(input.sort).map(([field, direction]) => {
+        return { [field]: direction };
+      });
     }
     return [];
   }

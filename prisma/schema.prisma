@@ -1,6 +1,6 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["driverAdapters", "multiSchema"]
+  previewFeatures = ["driverAdapters", "multiSchema", "views"]
 }
 
 datasource db {
@@ -8,16 +8,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Title {
-  id             String  @id @map("tconst")
-  type           String  @map("titletype")
+view Title {
+  id             String  @id @map("id")
+  type           String  @map("type")
   primaryTitle   String  @map("primarytitle")
-  originalTitle  String  @map("originaltitle")
+  originalTitle  String  @map("orignaltitle")
   isAdult        Boolean @map("isadult")
   startYear      Int?    @map("startyear")
   endYear        Int?    @map("endyear")
   genres         String? @map("genres")
   runtimeMinutes Int?    @map("runtimeminutes")
+  averageRate    Float?  @map("averagerate")
 
-  @@map("title_basics")
+  @@map("title_info")
 }

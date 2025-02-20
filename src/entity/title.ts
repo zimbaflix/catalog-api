@@ -7,4 +7,5 @@ export interface Title {
   endYear: number | null;
   genres: string[];
   runtimeMinutes: number | null;
+  averageRate: number | null;
 }
