@@ -2,12 +2,7 @@ import type { Logger } from '../common/logger/logger';
 import type { Title } from '../entity/title';
 import { TitleFilter, TitleSort, TitleRepository } from '../repository/title-repository';
 
-export type ListTitlesUseCaseInput = {
-  cursor?: string;
-  type?: string;
-  startYear?: { lte?: number; eq?: number };
-  sort?: { field: string; direction: string };
-};
+export type ListTitlesUseCaseInput = { cursor?: string; sort: TitleSort; filter: TitleFilter };
 
 export type ListTitlesUseCaseOutput = {
   titles: Title[];
@@ -36,15 +31,24 @@ export class ListTitlesUseCase {
   private buildTitleGatewaySort(input: ListTitlesUseCaseInput): TitleSort {
     const sort: TitleSort = {};
     if (input?.sort) {
-      Object.assign(sort, { [input.sort.field]: input.sort.direction });
+      Object.assign(sort, input.sort);
     }
     return sort;
   }
 
   private buildTitleGatewayFilter(input: ListTitlesUseCaseInput): TitleFilter {
     const filter: TitleFilter = {};
-    if (input?.type) {
-      Object.assign(filter, { type: input.type });
+    if (input?.filter) {
+      Object.assign(filter, input.filter);
+    }
+    if (input?.sort) {
+      // Add not null filter for each sort field to avoid null values
+      Object.entries(input.sort).forEach(([key]) => {
+        if (!filter[key]) {
+          Object.assign(filter, { [key]: {} });
+        }
+        Object.assign<TitleFilter, unknown>(filter[key], { not: null });
+      });
     }
     return filter;
   }

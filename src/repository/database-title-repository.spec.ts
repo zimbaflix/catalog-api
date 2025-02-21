@@ -68,11 +68,11 @@ describe('DatabaseTitleRepository', () => {
 
     it('calls prisma.title.findMany with order', async () => {
       const sut = makeSut();
-      await sut.list({ sort: { tconst: TitleSortDirection.ASC }, limit: 10 });
+      await sut.list({ sort: { type: TitleSortDirection.ASC }, limit: 10 });
       expect(prisma.title.findMany).toHaveBeenCalledWith({
         take: 10,
         skip: 0,
-        orderBy: [{ tconst: 'asc' }],
+        orderBy: [{ type: 'asc' }],
         where: { isAdult: false },
       });
     });
@@ -104,6 +104,7 @@ describe('DatabaseTitleRepository', () => {
         genres: 'Action',
         runtimeMinutes: 120,
         isAdult: false,
+        averageRate: 3,
       };
       vi.spyOn(prisma.title, 'findMany').mockResolvedValueOnce([title]);
       const result = await sut.list({ limit: 10 });
@@ -118,6 +119,7 @@ describe('DatabaseTitleRepository', () => {
             endYear: 2021,
             genres: ['Action'],
             runtimeMinutes: 120,
+            averageRate: 3,
           },
         ],
         cursor: '1',
@@ -145,6 +147,7 @@ describe('DatabaseTitleRepository', () => {
         genres: null,
         runtimeMinutes: 120,
         isAdult: false,
+        averageRate: 3,
       };
       vi.spyOn(prisma.title, 'findMany').mockResolvedValueOnce([title]);
       const result = await sut.list({ limit: 10 });
@@ -159,6 +162,7 @@ describe('DatabaseTitleRepository', () => {
             endYear: 2021,
             genres: [],
             runtimeMinutes: 120,
+            averageRate: 3,
           },
         ],
         cursor: '1',

@@ -1,8 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
-import type {
-  TitleRepository,
-  TitleRepositoryListInput,
-  TitleRepositoryListOutput,
+import {
+  TitleSortDirection,
+  type TitleRepository,
+  type TitleRepositoryListInput,
+  type TitleRepositoryListOutput,
 } from '../repository/title-repository';
 import { ListTitlesUseCase, type ListTitlesUseCaseInput } from './list-titles-use-case';
 import type { Title } from '../entity/title';
@@ -56,6 +57,7 @@ describe('ListTitlesUseCase', () => {
       endYear: 2021,
       runtimeMinutes: 90,
       genres: ['Action'],
+      averageRate: 3,
     };
     vi.spyOn(TitleRepositoryStub.prototype, 'list').mockResolvedValueOnce({
       data: [title],
@@ -75,8 +77,8 @@ describe('ListTitlesUseCase', () => {
     const sut = makeSut();
     const sutInput: ListTitlesUseCaseInput = {
       cursor: 'cursor',
-      sort: { field: 'field', direction: 'asc' },
-      type: 'movie',
+      sort: { id: TitleSortDirection.ASC },
+      filter: { type: 'movie' },
     };
     await sut.execute(sutInput);
     expect(loggerDebugSpy).toHaveBeenCalledWith('listing titles', sutInput);
@@ -86,7 +88,7 @@ describe('ListTitlesUseCase', () => {
   it('calls repository with correct params', async () => {
     const titleRepositoryListSpy = vi.spyOn(TitleRepositoryStub.prototype, 'list');
     const sut = makeSut();
-    await sut.execute({});
+    await sut.execute();
     expect(titleRepositoryListSpy).toHaveBeenCalledWith({
       cursor: undefined,
       filter: {},
@@ -94,13 +96,13 @@ describe('ListTitlesUseCase', () => {
     });
     await sut.execute({
       cursor: 'cursor',
-      sort: { field: 'field', direction: 'asc' },
-      type: 'movie',
+      sort: { originalTitle: TitleSortDirection.ASC },
+      filter: { type: 'movie' },
     });
     expect(titleRepositoryListSpy).toHaveBeenCalledWith({
       cursor: 'cursor',
-      sort: { field: 'asc' },
-      filter: { type: 'movie' },
+      sort: { originalTitle: 'asc' },
+      filter: { type: 'movie', originalTitle: { not: null } },
     });
   });
 });

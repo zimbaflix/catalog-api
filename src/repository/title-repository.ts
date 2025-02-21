@@ -1,21 +1,28 @@
-import { Title } from '../entity/title';
+import { Title, TitleType } from '../entity/title';
 
 export enum TitleSortDirection {
   ASC = 'asc',
   DESC = 'desc',
 }
 
-export type TitleSort = Record<string, TitleSortDirection>;
+export type TitleSort = Partial<Record<keyof Title, TitleSortDirection>>;
 
-export type TitleFilter = {
-  type?: string;
-  startYear?: {
-    lte?: number;
-    eq?: number;
-  };
-  averageRate?: {
-    not?: number | null;
-  };
+export type TitleFilterFields = Partial<Omit<Title, 'id'>>;
+
+export type TitleFilterOperators<T> = T & {
+  eq?: T | null;
+  not?: T | null;
+  lte?: T;
+  gte?: T;
+  in?: T[];
+  notIn?: T[];
+  like?: string;
+};
+
+export type TitleFilter = TitleFilterFields & {
+  type?: TitleFilterOperators<TitleType>;
+  startYear?: TitleFilterOperators<number>;
+  averageRate?: TitleFilterOperators<number>;
 };
 
 export type TitleRepositoryListInput = {

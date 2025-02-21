@@ -1,10 +1,11 @@
 import {
+  TitleFilter,
   type TitleRepository,
   type TitleRepositoryListInput,
   type TitleRepositoryListOutput,
 } from './title-repository';
 import { Prisma, PrismaClient } from '@prisma/client';
-import { Title } from '../entity/title';
+import { Title, TitleType } from '../entity/title';
 
 export class DatabaseTitleRepository implements TitleRepository {
   private readonly maxLimit = 10;
@@ -21,7 +22,7 @@ export class DatabaseTitleRepository implements TitleRepository {
     });
     const titles: Title[] = rows.map((row) => ({
       id: row.id,
-      type: row.type,
+      type: row.type as TitleType,
       primaryTitle: row.primaryTitle,
       originalTitle: row.originalTitle,
       startYear: row.startYear,
@@ -39,9 +40,7 @@ export class DatabaseTitleRepository implements TitleRepository {
   private buildWhereClause(input: TitleRepositoryListInput): Prisma.TitleWhereInput {
     const conditions: Prisma.TitleWhereInput = { isAdult: false };
     if (input.filter) {
-      Object.entries(input.filter).forEach(([field, value]) => {
-        Object.assign(conditions, { [field]: value });
-      });
+      Object.assign<typeof conditions, TitleFilter>(conditions, input.filter);
     }
     return conditions;
   }

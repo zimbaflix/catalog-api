@@ -19,9 +19,34 @@ const typeDefs = `#graphql
     inheritMaxAge: Boolean
   ) on FIELD_DEFINITION | OBJECT | INTERFACE | UNION
 
+
+
+  enum TitleSortableField {
+    primaryTitle
+    originalTitle
+    averageRate
+    startYear
+    endYear
+    runtimeMinutes
+  }
+
+  enum TitleType {
+    movie
+    short
+    tvEpisode
+    tvMiniSeries
+    tvMovie
+    tvPilot
+    tvSeries
+    tvShort
+    tvSpecial
+    video
+    videoGame
+  }
+
   type Title {
     id: ID!
-    type: String!
+    type: TitleType!
     primaryTitle: String!
     originalTitle: String!
     averageRate: Float
@@ -37,7 +62,7 @@ const typeDefs = `#graphql
   }
 
   input Sort {
-    field: String!
+    field: TitleSortableField!
     direction: SortDirection!
   }
 
@@ -48,7 +73,7 @@ const typeDefs = `#graphql
 
   type Query {
     titles(
-      type: String, 
+      type: TitleType, 
       sort: Sort, 
       genres: [String] 
       cursor: String, 
