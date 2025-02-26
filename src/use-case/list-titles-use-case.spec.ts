@@ -57,7 +57,8 @@ describe('ListTitlesUseCase', () => {
       endYear: 2021,
       runtimeMinutes: 90,
       genres: ['Action'],
-      averageRate: 3,
+      averageRating: 3,
+      ratingVotesCount: 100,
     };
     vi.spyOn(TitleRepositoryStub.prototype, 'list').mockResolvedValueOnce({
       data: [title],

@@ -29,7 +29,8 @@ export class DatabaseTitleRepository implements TitleRepository {
       endYear: row.endYear,
       genres: row.genres?.split(',') ?? [],
       runtimeMinutes: row.runtimeMinutes,
-      averageRate: row.averageRate,
+      averageRating: row.averageRating,
+      ratingVotesCount: row.ratingVotesCount,
     }));
     return {
       data: titles,

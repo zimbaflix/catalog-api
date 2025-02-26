@@ -9,5 +9,6 @@ export interface Title {
   endYear: number | null;
   genres: string[];
   runtimeMinutes: number | null;
-  averageRate: number | null;
+  averageRating: number | null;
+  ratingVotesCount: number | null;
 }

@@ -104,7 +104,8 @@ describe('DatabaseTitleRepository', () => {
         genres: 'Action',
         runtimeMinutes: 120,
         isAdult: false,
-        averageRate: 3,
+        averageRating: 3,
+        ratingVotesCount: 100,
       };
       vi.spyOn(prisma.title, 'findMany').mockResolvedValueOnce([title]);
       const result = await sut.list({ limit: 10 });
@@ -119,7 +120,8 @@ describe('DatabaseTitleRepository', () => {
             endYear: 2021,
             genres: ['Action'],
             runtimeMinutes: 120,
-            averageRate: 3,
+            averageRating: 3,
+            ratingVotesCount: 100,
           },
         ],
         cursor: '1',
@@ -147,7 +149,8 @@ describe('DatabaseTitleRepository', () => {
         genres: null,
         runtimeMinutes: 120,
         isAdult: false,
-        averageRate: 3,
+        averageRating: 3,
+        ratingVotesCount: 100,
       };
       vi.spyOn(prisma.title, 'findMany').mockResolvedValueOnce([title]);
       const result = await sut.list({ limit: 10 });
@@ -162,7 +165,8 @@ describe('DatabaseTitleRepository', () => {
             endYear: 2021,
             genres: [],
             runtimeMinutes: 120,
-            averageRate: 3,
+            averageRating: 3,
+            ratingVotesCount: 100,
           },
         ],
         cursor: '1',

@@ -9,16 +9,17 @@ datasource db {
 }
 
 view Title {
-  id             String   @id @map("id")
-  type           String?  @map("type")
-  primaryTitle   String?  @map("primarytitle")
-  originalTitle  String?  @map("orignaltitle")
-  isAdult        Boolean? @map("isadult")
-  startYear      Int?     @map("startyear")
-  endYear        Int?     @map("endyear")
-  genres         String?  @map("genres")
-  runtimeMinutes Int?     @map("runtimeminutes")
-  averageRate    Float?   @map("averagerate")
+  id               String   @id @map("tconst")
+  type             String?  @map("titletype")
+  primaryTitle     String?  @map("primarytitle")
+  originalTitle    String?  @map("originaltitle")
+  isAdult          Boolean? @map("isadult")
+  startYear        Int?     @map("startyear")
+  endYear          Int?     @map("endyear")
+  genres           String?  @map("genres")
+  runtimeMinutes   Int?     @map("runtimeminutes")
+  averageRating    Float?   @map("rating_averagerating")
+  ratingVotesCount Float?   @map("rating_numvotes")
 
   @@map("title_info")
 }

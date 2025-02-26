@@ -24,7 +24,8 @@ const typeDefs = `#graphql
   enum TitleSortableField {
     primaryTitle
     originalTitle
-    averageRate
+    averageRating
+    ratingVotesCount
     startYear
     endYear
     runtimeMinutes
@@ -49,7 +50,8 @@ const typeDefs = `#graphql
     type: TitleType!
     primaryTitle: String!
     originalTitle: String!
-    averageRate: Float
+    averageRating: Float
+    ratingVotesCount: Int
     startYear: Int
     endYear: Int
     genres: [String]

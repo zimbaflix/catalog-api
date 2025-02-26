@@ -22,7 +22,7 @@ export type TitleFilterOperators<T> = T & {
 export type TitleFilter = TitleFilterFields & {
   type?: TitleFilterOperators<TitleType>;
   startYear?: TitleFilterOperators<number>;
-  averageRate?: TitleFilterOperators<number>;
+  averageRating?: TitleFilterOperators<number>;
 };
 
 export type TitleRepositoryListInput = {
