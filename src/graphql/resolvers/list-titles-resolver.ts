@@ -10,7 +10,7 @@ type ListTitlesResolverArgs = {
 };
 
 type ListTitlesResolverOutput = {
-  titles: Title[];
+  items: Title[];
   cursor: string | null;
 };
 
@@ -29,5 +29,5 @@ export const listTitlesResolver =
       },
     });
     logger.info(`listed titles`, { args, count: titles.length });
-    return { titles, cursor };
+    return { items: titles, cursor };
   };
