@@ -3,29 +3,35 @@ import type { Logger } from './logger';
 
 export class PinoLogger implements Logger {
   private readonly logger: pino.Logger;
-  private readonly meta: object;
 
-  constructor(meta: object = {}) {
-    this.meta = meta;
+  constructor(public meta: object = {}) {
     this.logger = pino({
       level: process.env.LOG_LEVEL || 'info',
-    });
+      transport: {
+        targets: process.env.NODE_ENV !== 'production' ? [{ target: 'pino-pretty', options: { colorize: true } }] : [],
+      },
+    }).child(meta);
   }
 
   debug(message: string, meta?: object): void {
-    this.logger.debug({ message, ...this.meta, ...meta });
+    this.logger.debug({ message, ...meta });
   }
 
   info(message: string, meta?: object): void {
-    this.logger.info({ message, ...this.meta, ...meta });
+    this.logger.info({ message, ...meta });
   }
 
   warn(message: string, meta?: object): void {
-    this.logger.warn({ message, ...this.meta, ...meta });
+    this.logger.warn({ message, ...meta });
   }
 
   error(message: string, meta?: object): void {
-    this.logger.error({ message, ...this.meta, ...meta });
+    if ('error' in meta) {
+      const { error, ...rest } = meta;
+      this.logger.error({ message, err: error, ...rest });
+      return;
+    }
+    this.logger.error({ message, ...meta });
   }
 
   child(meta: object): Logger {

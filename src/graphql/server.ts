@@ -69,7 +69,7 @@ const typeDefs = `#graphql
   }
 
   type ListTitlesOutput {
-    titles: [Title] @cacheControl(maxAge: 60)
+    items: [Title] @cacheControl(maxAge: 60)
     cursor: String
   }
 
